@@ -6,7 +6,7 @@ import os
 from openai import OpenAI
 
 from dotenv import load_dotenv
-
+"""
 
 load_dotenv()  # This reads the .env file
 print("API Key Loaded:", os.getenv("OPENAI_API_KEY"))
