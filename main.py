@@ -1,31 +1,41 @@
-ellison_message = "The light is the truth."
-activities = ["reading", "writing", "coding", "listening to music"]
-import requests
-response = requests.get("https://bored-api.appbrewery.com/random")
 import os
 from openai import OpenAI
-
 from dotenv import load_dotenv
-print(ellison_message)
 
-load_dotenv()  # This reads the .env file
-print("API Key Loaded:", os.getenv("OPENAI_API_KEY"))
-"""
+load_dotenv() 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# Make the request
-response = client.chat.completions.create(
-    model="gpt-4",  # or "gpt-3.5-turbo"
-    messages=[
-        {"role": "system", "content": "You are a wise literary scholar."},
-        {"role": "user", "content": "What does Ralph Ellison say about invisibility?"}
-    ]
-)
+def ask_ellison(prompt): 
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {"role":"system","content":"You are a wise literary scholar."},
+                {"role":"user","content":prompt}
+            ]
+        )
+        print("AI Says:")
+        return response.choices[0].message.content
 
-# Print the reply
-print(response.choices[0].message.content)
+reply = ask_ellison("What does Ellison say about Richard Wright?")
+print(reply)
+
+
+
 """
-"""
+    response = client.chat.completions.create(
+        model="gpt-4.1",
+        messages=[
+            {"role": "system", "content": "You are a wise literary scholar."},
+            {"role": "user", "content": "What does Ralph Ellison say about invisibility?"}
+        ]
+    )
+    ## print("AI Says:")
+    # Print the reply
+    ## print(response.choices[0].message.content)
+
+import requests
+response = requests.get("https://bored-api.appbrewery.com/random")
+
 if response.status_code == 200:
     data = response.json()
     print("\nHere’s a suggestion from the Bored API:")
@@ -37,7 +47,6 @@ for activity in activities:
     print(f"One thing I enjoy is {activity}.")
 
 
-
-print(ellison_message)
+    activities = ["reading", "writing", "coding", "listening to music"]
 
 """
