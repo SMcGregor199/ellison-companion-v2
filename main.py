@@ -1,3 +1,4 @@
+from flask import Flask, request, jsonify
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -5,6 +6,7 @@ from parse_excerpts import load_excerpts
 
 excerpts = load_excerpts()
 load_dotenv() 
+app = Flask(__name__)
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -28,8 +30,29 @@ def ask_ellison(prompt):
         print("AI Says:")
         return response.choices[0].message.content
 
-reply = ask_ellison("What does Ellison say about Richard Wright?")
-print(reply)
+@app.route('/ask', methods=['POST'])
+def ask():
+    data = request.get_json()
+    prompt = data.get("prompt", "")
+
+    matches = find_relevant_excerpts(prompt, excerpts)
+
+    system_msg = "You are a literary assistant trained on the work of Ralph Ellison.\n"
+    for m in matches:
+        system_msg += f"\nExcerpt from '{m['title']}':\n{m['content']}\n"
+
+    response = client.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": system_msg.strip()},
+            {"role": "user", "content": prompt}
+        ]
+    )
+    return jsonify({"answer": response.choices[0].message.content})
+
+
+# reply = ask_ellison("What does Ellison say about Richard Wright?")
+# print(reply)
 
 
 
