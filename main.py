@@ -1,9 +1,21 @@
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
+from parse_excerpts import load_excerpts
 
+excerpts = load_excerpts()
 load_dotenv() 
+
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+def find_relevant_excerpts(prompt, excerpts, max_count=2):
+    matches = []
+    for excerpt in excerpts:
+        if any(tag.lower() in prompt.lower() for tag in excerpt["tags"]):
+            matches.append(excerpt)
+        if len(matches) >= max_count:
+            break
+    return matches
 
 def ask_ellison(prompt): 
         response = client.chat.completions.create(
