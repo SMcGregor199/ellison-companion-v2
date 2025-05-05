@@ -9,7 +9,7 @@ export default function Home() {
   
   async function handleSubmit() {
     setLoading(true);
-    const res = await fetch('http://localhost:3000/ask', {
+    const res = await fetch('https://localhost:3000/ask', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt: question })
