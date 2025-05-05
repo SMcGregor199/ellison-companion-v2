@@ -3,11 +3,12 @@ import os
 from openai import OpenAI
 from dotenv import load_dotenv
 from parse_excerpts import load_excerpts
+from flask_cors import CORS
 
 excerpts = load_excerpts()
 load_dotenv() 
 app = Flask(__name__)
-
+CORS(app)
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def find_relevant_excerpts(prompt, excerpts, max_count=2):
