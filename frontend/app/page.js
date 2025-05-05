@@ -1,12 +1,40 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
+import { useState } from 'react';
+
 
 export default function Home() {
+  const [question, setQuestion] = useState('');
+  const [response, setResponse] = useState('');
+  const [loading, setLoading] = useState(false);
+  
+  async function handleSubmit() {
+    setLoading(true);
+    const res = await fetch('http://localhost:8000/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: question })
+    });
+    const data = await res.json();
+    setResponse(data.answer);
+    setLoading(false);
+  }
+
   return (
-    <div>
-      <h1>The Ralph Ellison Companion</h1>
-      <p>Ask questions. Get citations. Stay complex.</p>
-    </div>
+    <main style={{ padding: '2rem' }}>
+      <h1>Ask Ellison GPT</h1>
+      <textarea
+        rows="4"
+        cols="50"
+        value={question}
+        onChange={(e) => setQuestion(e.target.value)}
+        placeholder="Ask a question about Ellison’s work..."
+      />
+      <br />
+      <button onClick={handleSubmit} disabled={loading}>
+        {loading ? 'Thinking...' : 'Submit'}
+      </button>
+      <pre style={{ marginTop: '1rem' }}>{response}</pre>
+    </main>
   );
     // <div className={styles.page}>
     //   <main className={styles.main}>
